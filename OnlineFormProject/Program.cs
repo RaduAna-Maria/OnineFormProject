@@ -1,7 +1,12 @@
+using InfluxDB3.Client;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<InfluxDBClient>(sp =>
+    new InfluxDBClient("link",
+    "token"));
 
 var app = builder.Build();
 
