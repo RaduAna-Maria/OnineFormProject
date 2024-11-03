@@ -1,0 +1,111 @@
+﻿@using OnlineFormProject.Constants
+@model OnlineFormProject.Models.CoffeeOrderModel
+@{
+    ViewData["Title"] = "Coffee Order";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="CoffeeOrderForm" method="post">
+    <div class="form-group">
+        <label for="Name">Name</label>
+        <input type="text" class="form-control" id="Name" name="Name" pattern="[a-zA-Z]+" title="Please enter a valid name" value="@Model.Name" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Phone">Phone</label>
+        <input type="text" class="form-control" id="Phone" name="Phone" maxlength="10" pattern="^\d{10}$" title="Please enter a valid 10-digit phone number" value="@Model.Phone" required />
+    </div>
+
+    <div class="form-group">
+        <label for="SelectedCoffee">Select Coffee</label>
+        <select class="form-control" id="SelectedCoffee" name="SelectedCoffee" required>
+            <option value="">-- Choose a coffee --</option>
+            @foreach (CoffeeType coffee in Enum.GetValues(typeof(CoffeeType)))
+            {
+                <option value="@coffee">@coffee</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="SelectedSize">Select Size</label>
+        <select class="form-control" id="SelectedSize" name="SelectedSize" required>
+            <option value="">-- Choose a size --</option>
+            @foreach (CoffeeSize size in Enum.GetValues(typeof(CoffeeSize)))
+            {
+                <option value="@size">@size</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Toppings</label>
+        <div>
+            @foreach (CoffeeToppings topping in Enum.GetValues(typeof(CoffeeToppings)))
+            {
+                <label>
+                    <input type="checkbox" name="SelectedToppings" value="@topping" @(Model.SelectedToppings?.Contains(topping.ToString()) == true ? "checked" : "") />
+                    @topping
+                </label>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="Membership">Membership</label>
+        <select class="form-control" id="Membership" name="Membership" required>
+            <option value="">-- Choose membership --</option>
+            @foreach (MembershipType membership in Enum.GetValues(typeof(MembershipType)))
+            {
+                <option value="@membership">@membership</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group extra-toppings-container hidden">
+        <label>Extra Toppings</label>
+        <div>
+            @foreach (CoffeeToppings topping in Enum.GetValues(typeof(CoffeeToppings)))
+            {
+                <label>
+                    <input type="radio" name="ExtraToppings" value="@topping" />
+                    @topping
+                </label>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="Quantity">Quantity</label>
+        <input type="number" class="form-control" id="Quantity" name="Quantity" value="@Model.Quantity" min="1" required />
+    </div>
+
+    <div class="form-group">
+        <label for="TotalPrice">Total Price</label>
+        <input type="text" class="form-control" id="TotalPrice" name="TotalPrice" value="@Model.TotalPrice.ToString("C")" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Place Order</button>
+</form>
+
+@section Scripts {
+    <script src="@Url.Content("~/js/CalculateTotal.js")" defer></script>
+    <script src="@Url.Content("~/js/MembershipPerks.js")" defer></script>
+
+    <input type="hidden" id="CoffeePrices" value='@Html.Raw(OnlineFormProject.Constants.CoffeeOrderPrices.GetSerializedCoffeePrices())' />
+    <input type="hidden" id="SizePrices" value='@Html.Raw(OnlineFormProject.Constants.CoffeeOrderPrices.GetSerializedSizePrices())' />
+    <input type="hidden" id="MembershipDiscounts" value='@Html.Raw(OnlineFormProject.Constants.CoffeeOrderPrices.GetSerializedMembershipDiscounts())' />
+    <input type="hidden" id="ToppingPrice" value='@CoffeeOrderPrices.ToppingPrice' />
+}
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
