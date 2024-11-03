@@ -19,7 +19,6 @@ namespace OnlineFormProject.Controllers
             _influxClient = influxClient;
         }
 
-
         [HttpGet]
         public IActionResult CoffeeOrderForm()
         {
@@ -95,7 +94,6 @@ namespace OnlineFormProject.Controllers
 
             await _influxClient.WritePointAsync(point, bucket);
         }
-
 
         private void AppendToCSV(CoffeeOrderModel model)
         {
